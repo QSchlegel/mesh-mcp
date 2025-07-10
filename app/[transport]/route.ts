@@ -19,63 +19,63 @@ const handler = createMcpHandler(
           },
         ],
       })
-    ),
-      server.tool(
-        "getAddressBalance",
-        "Get the balance of an address on a given network (0: preprod, 1: mainnet)",
-        {
+    );
+    server.tool(
+      "getAddressBalance",
+      "Get the balance of an address on a given network (0: preprod, 1: mainnet)",
+      {
+        address: z.string(),
+        network: z.number(),
+      },
+      async ({ address, network }) => {
+        const result = await getAddressBalance(address, network);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+        };
+      }
+    );
+    server.tool(
+      "getAddressUtxos",
+      "Get the UTXOs for an address on a given network (0: preprod, 1: mainnet)",
+      {
+        address: z.string(),
+        network: z.number(),
+      },
+      async ({ address, network }) => {
+        const result = await getAddressUtxos(address, network);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+        };
+      }
+    );
+    server.tool(
+      "getAddressTransactions",
+      "Get the transactions for an address on a given network (0: preprod, 1: mainnet)",
+      {
           address: z.string(),
           network: z.number(),
-        },
-        async ({ address, network }) => {
-          const result = await getAddressBalance(address, network);
+      },
+      async ({ address, network }) => {
+          const result = await getAddressTransactions(address, network);
           return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(result, null, 2),
-              },
-            ],
+              content: [
+                  {
+                      type: "text",
+                      text: JSON.stringify(result, null, 2),
+                  }
+              ]
           };
-        }
-      ),
-      server.tool(
-        "getAddressUtxos",
-        "Get the UTXOs for an address on a given network (0: preprod, 1: mainnet)",
-        {
-          address: z.string(),
-          network: z.number(),
-        },
-        async ({ address, network }) => {
-          const result = await getAddressUtxos(address, network);
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(result, null, 2),
-              },
-            ],
-          };
-        }
-      ),
-      server.tool(
-        "getAddressTransactions",
-        "Get the transactions for an address on a given network (0: preprod, 1: mainnet)",
-        {
-            address: z.string(),
-            network: z.number(),
-        },
-        async ({ address, network }) => {
-            const result = await getAddressTransactions(address, network);
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify(result, null, 2),
-                    }
-                ]
-            };
-        }
+      }
     );
   },
   {

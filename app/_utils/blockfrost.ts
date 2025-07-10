@@ -8,11 +8,12 @@ export async function getAddressBalance(address: string, network: number) {
         const balance = await provider.get(`/addresses/${address}`);
         console.log(`Balance for address ${address}:`, balance);
         return balance;
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error(`Failed to fetch balance for address ${address}:`, error);
         return {
             error: true,
-            message: `Failed to fetch balance for address ${address}: ${error?.message || error}`
+            message: `Failed to fetch balance for address ${address}: ${message}`
         };
     }
 }
@@ -25,11 +26,12 @@ export async function getAddressUtxos(address: string, network: number) {
         const utxos = await provider.get(`/addresses/${address}/utxos`);
         console.log(`UTXOs for address ${address}:`, utxos);
         return utxos;
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error(`Failed to fetch UTXOs for address ${address}:`, error);
         return {
             error: true,
-            message: `Failed to fetch UTXOs for address ${address}: ${error?.message || error}`
+            message: `Failed to fetch UTXOs for address ${address}: ${message}`
         };
     }
 }
@@ -42,11 +44,12 @@ export async function getAddressTransactions(address: string, network: number) {
         const txs = await provider.get(`/addresses/${address}/transactions`);
         console.log(`Transactions for address ${address}:`, txs);
         return txs;
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error(`Failed to fetch transactions for address ${address}:`, error);
         return {
             error: true,
-            message: `Failed to fetch transactions for address ${address}: ${error?.message || error}`
+            message: `Failed to fetch transactions for address ${address}: ${message}`
         };
     }
 }
