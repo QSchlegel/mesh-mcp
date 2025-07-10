@@ -1,7 +1,7 @@
 import { deserializeAddress } from "@meshsdk/core";
 import { createMcpHandler } from "@vercel/mcp-adapter";
 import z from "zod";
-import { getAddressBalance, getAddressUtxos, getAddressTransactions } from "@/app/_utils/blockfrost";
+import { getAddressBalance, getAddressUtxos, getAddressTransactions, getAccount, getAccountRewards, getAccountUtxos } from "@/app/_utils/blockfrost";
 
 const handler = createMcpHandler(
   (server) => {
@@ -75,6 +75,63 @@ const handler = createMcpHandler(
                   }
               ]
           };
+      }
+    );
+    server.tool(
+      "getAccount",
+      "Get the account info for a stake address on a given network (0: preprod, 1: mainnet)",
+      {
+        stake_address: z.string(),
+        network: z.number(),
+      },
+      async ({ stake_address, network }) => {
+        const result = await getAccount(stake_address, network);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+        };
+      }
+    );
+    server.tool(
+      "getAccountRewards",
+      "Get the rewards for a stake address on a given network (0: preprod, 1: mainnet)",
+      {
+        stake_address: z.string(),
+        network: z.number(),
+      },
+      async ({ stake_address, network }) => {
+        const result = await getAccountRewards(stake_address, network);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+        };
+      }
+    );
+    server.tool(
+      "getAccountUtxos",
+      "Get the UTXOs for a stake address on a given network (0: preprod, 1: mainnet)",
+      {
+        stake_address: z.string(),
+        network: z.number(),
+      },
+      async ({ stake_address, network }) => {
+        const result = await getAccountUtxos(stake_address, network);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+        };
       }
     );
   },
