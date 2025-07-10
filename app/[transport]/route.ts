@@ -1,10 +1,35 @@
+import { v4 as uuidv4 } from "uuid";
 import { deserializeAddress } from "@meshsdk/core";
 import { createMcpHandler } from "@vercel/mcp-adapter";
 import z from "zod";
 import { getAddressBalance, getAddressUtxos, getAddressTransactions, getAccount, getAccountRewards, getAccountUtxos } from "@/app/_utils/blockfrost";
+import type { ProviderContext } from "@/app/_lib/blockfrostProvider";
+
+// In-memory store for session keys
+const sessionKeys = new Map(); // uuid -> { mainnetKey, preprodKey }
 
 const handler = createMcpHandler(
   (server) => {
+    server.tool(
+      "setupSession",
+      "Setup a session with optional Blockfrost keys. Returns a session UUID.",
+      {
+        mainnetKey: z.string().optional(),
+        preprodKey: z.string().optional(),
+      },
+      ({ mainnetKey, preprodKey }) => {
+        const sessionId = uuidv4();
+        sessionKeys.set(sessionId, { mainnetKey, preprodKey });
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({ sessionId }),
+            },
+          ],
+        };
+      }
+    );
     server.tool(
       "deserializeAddress",
       "Deserialize an address into a structured object",
@@ -26,9 +51,15 @@ const handler = createMcpHandler(
       {
         address: z.string(),
         network: z.number(),
+        sessionId: z.string().uuid().optional(),
       },
-      async ({ address, network }) => {
-        const result = await getAddressBalance(address, network);
+      async ({ address, network, sessionId }) => {
+        let context: ProviderContext = { network };
+        if (sessionId && sessionKeys.has(sessionId)) {
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
+        }
+        const result = await getAddressBalance(address, context);
         return {
           content: [
             {
@@ -45,9 +76,15 @@ const handler = createMcpHandler(
       {
         address: z.string(),
         network: z.number(),
+        sessionId: z.string().uuid().optional(),
       },
-      async ({ address, network }) => {
-        const result = await getAddressUtxos(address, network);
+      async ({ address, network, sessionId }) => {
+        let context: ProviderContext = { network };
+        if (sessionId && sessionKeys.has(sessionId)) {
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
+        }
+        const result = await getAddressUtxos(address, context);
         return {
           content: [
             {
@@ -62,19 +99,25 @@ const handler = createMcpHandler(
       "getAddressTransactions",
       "Get the transactions for an address on a given network (0: preprod, 1: mainnet)",
       {
-          address: z.string(),
-          network: z.number(),
+        address: z.string(),
+        network: z.number(),
+        sessionId: z.string().uuid().optional(),
       },
-      async ({ address, network }) => {
-          const result = await getAddressTransactions(address, network);
-          return {
-              content: [
-                  {
-                      type: "text",
-                      text: JSON.stringify(result, null, 2),
-                  }
-              ]
-          };
+      async ({ address, network, sessionId }) => {
+        let context: ProviderContext = { network };
+        if (sessionId && sessionKeys.has(sessionId)) {
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
+        }
+        const result = await getAddressTransactions(address, context);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(result, null, 2),
+            }
+          ]
+        };
       }
     );
     server.tool(
@@ -83,9 +126,15 @@ const handler = createMcpHandler(
       {
         stake_address: z.string(),
         network: z.number(),
+        sessionId: z.string().uuid().optional(),
       },
-      async ({ stake_address, network }) => {
-        const result = await getAccount(stake_address, network);
+      async ({ stake_address, network, sessionId }) => {
+        let context: ProviderContext = { network };
+        if (sessionId && sessionKeys.has(sessionId)) {
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
+        }
+        const result = await getAccount(stake_address, context);
         return {
           content: [
             {
@@ -102,9 +151,15 @@ const handler = createMcpHandler(
       {
         stake_address: z.string(),
         network: z.number(),
+        sessionId: z.string().uuid().optional(),
       },
-      async ({ stake_address, network }) => {
-        const result = await getAccountRewards(stake_address, network);
+      async ({ stake_address, network, sessionId }) => {
+        let context: ProviderContext = { network };
+        if (sessionId && sessionKeys.has(sessionId)) {
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
+        }
+        const result = await getAccountRewards(stake_address, context);
         return {
           content: [
             {
@@ -121,9 +176,15 @@ const handler = createMcpHandler(
       {
         stake_address: z.string(),
         network: z.number(),
+        sessionId: z.string().uuid().optional(),
       },
-      async ({ stake_address, network }) => {
-        const result = await getAccountUtxos(stake_address, network);
+      async ({ stake_address, network, sessionId }) => {
+        let context: ProviderContext = { network };
+        if (sessionId && sessionKeys.has(sessionId)) {
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
+        }
+        const result = await getAccountUtxos(stake_address, context);
         return {
           content: [
             {
