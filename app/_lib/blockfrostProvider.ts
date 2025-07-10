@@ -1,10 +1,10 @@
 import { env } from "@/app/env";
 import { BlockfrostProvider } from "@meshsdk/core";
 
-export function getProvider(network: number) {
+export function getProvider(network: number, mainnetKey?: string, preprodKey?: string) {
   return new BlockfrostProvider(
     network == 0
-      ? env.NEXT_PUBLIC_BLOCKFROST_API_KEY_PREPROD
-      : env.NEXT_PUBLIC_BLOCKFROST_API_KEY_MAINNET,
+      ? (preprodKey || env.NEXT_PUBLIC_BLOCKFROST_API_KEY_PREPROD)
+      : (mainnetKey || env.NEXT_PUBLIC_BLOCKFROST_API_KEY_MAINNET),
   );
 }

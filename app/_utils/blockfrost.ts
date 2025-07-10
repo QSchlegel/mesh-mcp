@@ -1,7 +1,7 @@
 import { getProvider } from "@/app/_lib/blockfrostProvider";
 
-export async function getAddressBalance(address: string, network: number) {
-    const provider = getProvider(network);
+export async function getAddressBalance(address: string, network: number, mainnetKey?: string, preprodKey?: string) {
+    const provider = getProvider(network, mainnetKey, preprodKey);
     try {
         const balance = await provider.get(`/addresses/${address}`);
         return balance;
@@ -15,8 +15,8 @@ export async function getAddressBalance(address: string, network: number) {
     }
 }
 
-export async function getAddressUtxos(address: string, network: number) {
-    const provider = getProvider(network);
+export async function getAddressUtxos(address: string, network: number, mainnetKey?: string, preprodKey?: string) {
+    const provider = getProvider(network, mainnetKey, preprodKey);
     try {
         const utxos = await provider.get(`/addresses/${address}/utxos`);
         return utxos;
@@ -30,8 +30,8 @@ export async function getAddressUtxos(address: string, network: number) {
     }
 }
 
-export async function getAddressTransactions(address: string, network: number) {
-    const provider = getProvider(network);
+export async function getAddressTransactions(address: string, network: number, mainnetKey?: string, preprodKey?: string) {
+    const provider = getProvider(network, mainnetKey, preprodKey);
     try {
         const txs = await provider.get(`/addresses/${address}/transactions`);
         return txs;
@@ -45,8 +45,8 @@ export async function getAddressTransactions(address: string, network: number) {
     }
 }
 
-export async function getAccount(stakeAddress: string, network: number) {
-    const provider = getProvider(network);
+export async function getAccount(stakeAddress: string, network: number, mainnetKey?: string, preprodKey?: string) {
+    const provider = getProvider(network, mainnetKey, preprodKey);
 
     console.log(`Fetching account for stake address ${stakeAddress} on network ${network}`);
     try {
@@ -63,8 +63,8 @@ export async function getAccount(stakeAddress: string, network: number) {
     }
 }
 
-export async function getAccountRewards(stakeAddress: string, network: number) {
-    const provider = getProvider(network);
+export async function getAccountRewards(stakeAddress: string, network: number, mainnetKey?: string, preprodKey?: string) {
+    const provider = getProvider(network, mainnetKey, preprodKey);
 
     console.log(`Fetching rewards for stake address ${stakeAddress} on network ${network}`);
     try {
@@ -81,8 +81,8 @@ export async function getAccountRewards(stakeAddress: string, network: number) {
     }
 }
 
-export async function getAccountUtxos(stakeAddress: string, network: number) {
-    const provider = getProvider(network);
+export async function getAccountUtxos(stakeAddress: string, network: number, mainnetKey?: string, preprodKey?: string) {
+    const provider = getProvider(network, mainnetKey, preprodKey);
 
     console.log(`Fetching UTXOs for stake address ${stakeAddress} on network ${network}`);
     try {
