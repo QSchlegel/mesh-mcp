@@ -39,6 +39,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 This project exposes Cardano blockchain tools to AI agents and apps using the Model Context Protocol (MCP) and [meshsdk](https://meshsdk.dev/).
 
+> **Live demo:** The MCP server is also deployed at [https://mesh-mcp.vercel.app](https://mesh-mcp.vercel.app) — you can use this URL directly in your MCP client (like Cursor) to try it out without running locally.
+
 ### What does it do?
 - Provides an MCP server endpoint at `/mcp`.
 - Lets AI clients (like Cursor) call Cardano tools such as:
@@ -58,7 +60,7 @@ Add this to your Cursor MCP config:
 {
   "mcpServers": {
     "cardano-meshsdk": {
-      "url": "http://localhost:3000/mcp"
+      "url": "https://mesh-mcp.vercel.app/mcp"
     }
   }
 }
