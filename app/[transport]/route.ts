@@ -3,6 +3,7 @@ import { deserializeAddress } from "@meshsdk/core";
 import { createMcpHandler } from "@vercel/mcp-adapter";
 import z from "zod";
 import { getAddressBalance, getAddressUtxos, getAddressTransactions, getAccount, getAccountRewards, getAccountUtxos } from "@/app/_utils/blockfrost";
+import type { ProviderContext } from "@/app/_lib/blockfrostProvider";
 
 // In-memory store for session keys
 const sessionKeys = new Map(); // uuid -> { mainnetKey, preprodKey }
@@ -53,11 +54,12 @@ const handler = createMcpHandler(
         sessionId: z.string().uuid().optional(),
       },
       async ({ address, network, sessionId }) => {
-        let mainnetKey, preprodKey;
+        let context: ProviderContext = { network };
         if (sessionId && sessionKeys.has(sessionId)) {
-          ({ mainnetKey, preprodKey } = sessionKeys.get(sessionId));
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
         }
-        const result = await getAddressBalance(address, network, mainnetKey, preprodKey);
+        const result = await getAddressBalance(address, context);
         return {
           content: [
             {
@@ -77,11 +79,12 @@ const handler = createMcpHandler(
         sessionId: z.string().uuid().optional(),
       },
       async ({ address, network, sessionId }) => {
-        let mainnetKey, preprodKey;
+        let context: ProviderContext = { network };
         if (sessionId && sessionKeys.has(sessionId)) {
-          ({ mainnetKey, preprodKey } = sessionKeys.get(sessionId));
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
         }
-        const result = await getAddressUtxos(address, network, mainnetKey, preprodKey);
+        const result = await getAddressUtxos(address, context);
         return {
           content: [
             {
@@ -101,11 +104,12 @@ const handler = createMcpHandler(
         sessionId: z.string().uuid().optional(),
       },
       async ({ address, network, sessionId }) => {
-        let mainnetKey, preprodKey;
+        let context: ProviderContext = { network };
         if (sessionId && sessionKeys.has(sessionId)) {
-          ({ mainnetKey, preprodKey } = sessionKeys.get(sessionId));
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
         }
-        const result = await getAddressTransactions(address, network, mainnetKey, preprodKey);
+        const result = await getAddressTransactions(address, context);
         return {
           content: [
             {
@@ -125,11 +129,12 @@ const handler = createMcpHandler(
         sessionId: z.string().uuid().optional(),
       },
       async ({ stake_address, network, sessionId }) => {
-        let mainnetKey, preprodKey;
+        let context: ProviderContext = { network };
         if (sessionId && sessionKeys.has(sessionId)) {
-          ({ mainnetKey, preprodKey } = sessionKeys.get(sessionId));
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
         }
-        const result = await getAccount(stake_address, network, mainnetKey, preprodKey);
+        const result = await getAccount(stake_address, context);
         return {
           content: [
             {
@@ -149,11 +154,12 @@ const handler = createMcpHandler(
         sessionId: z.string().uuid().optional(),
       },
       async ({ stake_address, network, sessionId }) => {
-        let mainnetKey, preprodKey;
+        let context: ProviderContext = { network };
         if (sessionId && sessionKeys.has(sessionId)) {
-          ({ mainnetKey, preprodKey } = sessionKeys.get(sessionId));
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
         }
-        const result = await getAccountRewards(stake_address, network, mainnetKey, preprodKey);
+        const result = await getAccountRewards(stake_address, context);
         return {
           content: [
             {
@@ -173,11 +179,12 @@ const handler = createMcpHandler(
         sessionId: z.string().uuid().optional(),
       },
       async ({ stake_address, network, sessionId }) => {
-        let mainnetKey, preprodKey;
+        let context: ProviderContext = { network };
         if (sessionId && sessionKeys.has(sessionId)) {
-          ({ mainnetKey, preprodKey } = sessionKeys.get(sessionId));
+          const { mainnetKey, preprodKey } = sessionKeys.get(sessionId);
+          context = { network, mainnetKey, preprodKey };
         }
-        const result = await getAccountUtxos(stake_address, network, mainnetKey, preprodKey);
+        const result = await getAccountUtxos(stake_address, context);
         return {
           content: [
             {
