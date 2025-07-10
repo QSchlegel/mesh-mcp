@@ -47,6 +47,11 @@ This project exposes Cardano blockchain tools to AI agents and apps using the Mo
   - `getAddressUtxos`: List UTXOs for an address
   - ...and more
 
+### How does this help Cardano developers?
+- **Rapid prototyping:** Instantly expose Cardano blockchain functions to AI tools and chat agents for quick testing and iteration.
+- **AI-powered automation:** Use AI assistants (like Cursor) to automate Cardano queries, wallet checks, and data extraction in your dev workflow.
+- **Tool integration:** Connect your Cardano backend to any MCP-compatible client, making it easy to build, test, or demo blockchain features interactively.
+
 ### Example: Use with Cursor
 Add this to your Cursor MCP config:
 ```json
